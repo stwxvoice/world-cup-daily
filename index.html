@@ -32,8 +32,8 @@
     z-index: 0;
     pointer-events: none;
   }
-  #bg-dark { opacity: 1; }
-  #bg-light { opacity: 0; }
+  #bg-dark { opacity: 0; }
+  #bg-light { opacity: 1; }
 
   /* ── Hero ── */
   .hero {
@@ -55,14 +55,14 @@
     color: #f0efea;
     letter-spacing: 0.04em;
     line-height: 1.2;
-    text-shadow: 0 2px 24px rgba(0,0,0,0.6);
+    text-shadow: 0 2px 24px rgba(0,0,0,0.08);
     data-anim: hero;
   }
   .hero-sub {
     font-family: 'Noto Sans SC', sans-serif;
     font-weight: 400;
     font-size: clamp(1rem, 2.5vw, 1.5rem);
-    color: rgba(240,239,234,0.75);
+    color: var(--ink-tint);
     margin-top: 1.2rem;
     letter-spacing: 0.08em;
     data-anim: hero;
@@ -341,18 +341,17 @@
   // Start appropriate background
   function startGL() {
     if (lowPower) {
-      // Show static background only
-      if (darkGL) darkGL.canvas.style.opacity = '1';
-      if (lightGL) lightGL.canvas.style.opacity = '0';
+      if (lightGL) lightGL.canvas.style.opacity = '1';
+      if (darkGL) darkGL.canvas.style.opacity = '0';
       return;
     }
-    const isLight = document.body.classList.contains('light-mode');
-    if (isLight) {
-      if (lightGL) { lightGL.canvas.style.opacity = '1'; lightGL.start(); }
-      if (darkGL) { darkGL.canvas.style.opacity = '0'; darkGL.stop(); }
-    } else {
+    const isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
       if (darkGL) { darkGL.canvas.style.opacity = '1'; darkGL.start(); }
       if (lightGL) { lightGL.canvas.style.opacity = '0'; lightGL.stop(); }
+    } else {
+      if (lightGL) { lightGL.canvas.style.opacity = '1'; lightGL.start(); }
+      if (darkGL) { darkGL.canvas.style.opacity = '0'; darkGL.stop(); }
     }
   }
 
