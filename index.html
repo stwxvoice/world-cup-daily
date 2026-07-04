@@ -1,443 +1,401 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026 世界杯 · 今日赛况日报</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink: #0a0a0b;
-    --paper: #f1efea;
-    --paper-tint: #e8e5de;
-    --ink-tint: #18181a;
-    --accent: #c8102e;
-    --accent-light: #e8543e;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 世界杯今日赛况日报</title>
+    <style>
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ── Guizang 电子杂志 × 电子墨水 · 墨水经典主题 ── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-  body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    overflow-x: hidden;
-  }
+body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #1A1A1A;
+    background-color: #F5F0E8;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2em 1.5em;
+}
 
-  /* ── WebGL canvas layers ── */
-  #bg-dark, #bg-light {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-  }
-  #bg-dark { opacity: 0; }
-  #bg-light { opacity: 1; }
-
-  /* ── Hero ── */
-  .hero {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+/* ── 封面 ── */
+.cover-page {
+    background-color: #2C2C2C;
+    color: #F5F0E8;
     text-align: center;
-    padding: 4rem 2rem;
-    background: transparent;
-  }
-  .hero-logo {
+    padding: 3em 2em;
+    margin-bottom: 3em;
+    border-radius: 4px;
+}
+.cover-page h1 {
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+}
+.cover-page .subtitle {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-size: 1em;
+    opacity: 0.7;
+    margin-top: 0.4em;
+}
+.cover-page .cover-date {
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-size: 2.4em;
+    font-weight: 700;
+    color: #F5F0E8;
+    margin: 0.3em 0 0.2em 0;
+    letter-spacing: 0.08em;
+}
+.cover-logo {
     display: block;
-    margin: 0 auto 1.5rem auto;
-    max-width: 220px;
+    margin: 0 auto 1.5em auto;
+    max-width: 180px;
     width: 40%;
     height: auto;
-    opacity: 0.85;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.06));
-  }
-  .hero-title {
-    font-family: 'Noto Serif SC', serif;
-    font-weight: 900;
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    color: var(--ink);
-    letter-spacing: 0.04em;
-    line-height: 1.2;
-    text-shadow: 0 2px 24px rgba(0,0,0,0.08);
-    data-anim: hero;
-  }
-  .hero-sub {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-weight: 400;
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    color: var(--ink-tint);
-    margin-top: 1.2rem;
-    letter-spacing: 0.08em;
-    data-anim: hero;
-  }
-  .hero-cta {
-    margin-top: 2.5rem;
-    data-anim: hero;
-  }
-  .hero-cta a {
-    display: inline-block;
-    padding: 0.85rem 2.4rem;
-    background: rgba(200,16,46,0.85);
-    color: #f0efea;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    letter-spacing: 0.06em;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background 0.25s, transform 0.2s;
-    backdrop-filter: blur(6px);
-  }
-  .hero-cta a:hover {
-    background: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(200,16,46,0.4);
-  }
+}
 
-  /* ── Archive list ── */
-  .archive-section {
-    position: relative;
-    z-index: 1;
-    background: var(--paper);
-    padding: 4rem 2rem 6rem;
-  }
-  .section-heading {
-    font-family: 'Noto Serif SC', serif;
+/* ── 章节标题 ── */
+.section-header {
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-size: 1.5em;
     font-weight: 700;
-    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-    color: var(--ink);
-    text-align: center;
-    margin-bottom: 3rem;
-    letter-spacing: 0.04em;
-  }
-  .archive-list {
-    max-width: 720px;
-    margin: 0 auto;
+    color: #1A1A1A;
+    border-top: 2px solid #8B4513;
+    padding-top: 0.6em;
+    margin-top: 1.8em;
+    margin-bottom: 0.8em;
+}
+.section-logo {
+    display: block;
+    float: right;
+    max-width: 60px;
+    width: 15%;
+    height: auto;
+    margin: 0 0 0.6em 0.8em;
+    opacity: 0.5;
+}
+
+/* ── 正文 ── */
+p, .body-text {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    margin: 0.6em 0;
+}
+
+/* ── 表格 ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-size: 0.9em;
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+}
+th {
+    background-color: #E8DCC8;
+    color: #1A1A1A;
+    text-align: left;
+    padding: 0.5em 0.6em;
+    border: 1px solid #D4C5A9;
+    font-weight: 600;
+}
+td {
+    padding: 0.4em 0.6em;
+    border: 1px solid #D4C5A9;
+    color: #1A1A1A;
+}
+tr:nth-child(even) td {
+    background-color: #EDE7DC;
+}
+
+/* ── 赛事前瞻卡片 ── */
+.match-preview {
+    border-left: 3px solid #8B4513;
+    padding-left: 1em;
+    margin: 1em 0;
+}
+.match-preview h3 {
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-size: 1.15em;
+    font-weight: 700;
+    margin: 0 0 0.3em 0;
+    color: #1A1A1A;
+}
+.match-preview .match-meta {
+    font-family: "Courier New", "SimSun", monospace;
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 0.3em;
+}
+.match-preview .match-preview-text {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    margin-top: 0.3em;
+}
+
+/* ── 花边新闻列表 ── */
+.gossip-list {
     list-style: none;
-  }
-  .archive-item {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid var(--paper-tint);
-    transition: background 0.2s;
-    data-anim: cascade;
-  }
-  .archive-item:hover {
-    background: var(--paper-tint);
-  }
-  .archive-date {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.92rem;
-    color: var(--accent);
-    white-space: nowrap;
-    min-width: 140px;
-  }
-  .archive-desc {
-    font-size: 1.05rem;
-    color: var(--ink-tint);
-  }
-  .archive-desc a {
-    color: var(--ink);
-    text-decoration: none;
-    font-weight: 500;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .archive-desc a:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  /* ── Footer ── */
-  .site-footer {
+    padding-left: 0;
+    counter-reset: gossip-counter;
+}
+.gossip-list li {
+    counter-increment: gossip-counter;
+    margin-bottom: 0.8em;
+    padding-left: 2.2em;
     position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 2.5rem 1rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.82rem;
-    color: rgba(10,10,11,0.45);
-    background: var(--paper-tint);
-    letter-spacing: 0.04em;
-  }
+}
+.gossip-list li::before {
+    content: counter(gossip-counter);
+    position: absolute;
+    left: 0;
+    color: #8B4513;
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-size: 1.1em;
+    font-weight: 700;
+}
 
-  /* ── Motion One helpers ── */
-  .motion-ready [data-anim="hero"] {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  .motion-ready [data-anim="cascade"] {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-</style>
+/* ── 综述 / 脚注 ── */
+.review-text {
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-style: italic;
+    color: #444;
+    margin: 1em 0;
+    padding-left: 0.5em;
+    border-left: 2px solid #8B4513;
+}
+
+.source-footer {
+    font-family: "Courier New", "SimSun", monospace;
+    font-size: 0.8em;
+    color: #888;
+    text-align: center;
+    margin-top: 3em;
+    padding-top: 1em;
+    border-top: 1px solid #D4C5A9;
+}
+.source-logo {
+    display: block;
+    margin: 0 auto 1em auto;
+    max-width: 80px;
+    width: 20%;
+    height: auto;
+    opacity: 0.35;
+}
+
+/* ── 响应式设计 ── */
+@media (max-width: 600px) {
+    body {
+        padding: 1em;
+        font-size: 15px;
+    }
+    .cover-page h1 {
+        font-size: 1.8em;
+    }
+    .section-header {
+        font-size: 1.3em;
+    }
+    table {
+        font-size: 0.85em;
+    }
+}
+
+    </style>
 </head>
 <body>
-
-<!-- WebGL Background Canvases -->
-<canvas id="bg-dark"></canvas>
-<canvas id="bg-light"></canvas>
-
-<!-- Hero Section -->
-<section class="hero">
-  <img class="hero-logo" src="data:image/png;base64,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" alt="FIFA World Cup 2026">
-  <h1 class="hero-title">2026 世界杯 · 今日赛况日报</h1>
-  <p class="hero-sub">FIFA World Cup Daily — 2026年7月 · 小组赛阶段</p>
-  <div class="hero-cta">
-    <a href="#archive">浏览往期日报 ↓</a>
-  </div>
-</section>
-
-<!-- Archive List -->
-<section class="archive-section" id="archive">
-  <h2 class="section-heading">日报归档</h2>
-  <ul class="archive-list">
-    <li class="archive-item">
-      <span class="archive-date">2026-07-03 · 小组赛第1轮</span>
-      <span class="archive-desc"><a href="2026-07-03.html">6场比赛 · 西班牙3-0奥地利 / 葡萄牙点球晋级</a></span>
-    </li>
-    <li class="archive-item">
-      <span class="archive-date">2026-07-03 · 下午版</span>
-      <span class="archive-desc"><a href="2026-07-03-pm.html">3场比赛 · 射手榜更新 · 赛事前瞻</a></span>
-    </li>
-  </ul>
-</section>
-
-<footer class="site-footer">
-  E-Magazine By ZAZ × FIFA World Cup 2026 Daily &nbsp;·&nbsp; Powered by GitHub Pages
-</footer>
-
-<!-- Motion One -->
-<script src="./motion.min.js"></script>
-<script>
-(function(){
-  // ── WebGL Background (from Guizang template) ──
-  const VS = `
-    attribute vec2 a_pos;
-    void main(){
-      gl_Position = vec4(a_pos, 0.0, 1.0);
-    }
-  `;
-
-  const FS_DARK = `
-    precision highp float;
-    uniform float u_time;
-    uniform vec2 u_res;
-
-    // Holographic chromatic dispersion
-    vec3 holo(vec2 uv, float t) {
-      vec3 col = vec3(0.0);
-      for (int i = 0; i < 3; i++) {
-        float shift = float(i) * 0.004 - 0.004;
-        vec2 uu = uv + vec2(sin(t * 0.3 + uv.y * 6.0 + shift * 40.0) * 0.015, 0.0);
-        float n = sin(uu.x * 12.0 + t * 0.7) * sin(uu.y * 8.0 - t * 0.5);
-        col[i] = 0.12 + 0.10 * n;
-      }
-      // Ink-wash base
-      float grad = smoothstep(0.0, 1.0, uv.y);
-      vec3 base = mix(vec3(0.04, 0.04, 0.05), vec3(0.08, 0.07, 0.09), grad);
-      // Subtle red accent (Guizang accent)
-      vec3 accent = vec3(0.78, 0.06, 0.18) * 0.04 * sin(uv.x * 10.0 + t * 0.4);
-      return base + col + accent;
-    }
-
-    void main(){
-      vec2 uv = gl_FragCoord.xy / u_res;
-      gl_FragColor = vec4(holo(uv, u_time), 1.0);
-    }
-  `;
-
-  const FS_LIGHT = `
-    precision highp float;
-    uniform float u_time;
-    uniform vec2 u_res;
-
-    // Hexagonal grid – gentle soccer ball panel texture
-    float hexDist(vec2 p) {
-      p = abs(p);
-      return max(dot(p, normalize(vec2(1.0, 1.732))), p.x);
-    }
-
-    vec3 hexGrid(vec2 uv, float t) {
-      vec2 p = uv * 48.0;
-      vec2 h  = vec2(1.0, 1.7320508);
-      vec2 a  = mod(p, h) - 0.5 * h;
-      vec2 b  = mod(p - 0.5 * h, h) - 0.5 * h;
-      vec2 gv = dot(a, a) < dot(b, b) ? a : b;
-
-      float d   = hexDist(gv);
-      float hex = smoothstep(0.47, 0.50, d) * smoothstep(0.57, 0.54, d);
-
-      // Base warm paper tone
-      vec3 col = mix(vec3(0.945, 0.925, 0.875), vec3(0.960, 0.940, 0.895), 0.5);
-
-      // Very faint hex lines
-      col = mix(col, vec3(0.915, 0.895, 0.845), hex * 0.05);
-
-      // Imperceptible slow wave
-      float move = t * 0.006;
-      float wave = sin(uv.x * 8.0 + move) * sin(uv.y * 6.0 - move * 0.6) * 0.015;
-      col += wave;
-
-      return col;
-    }
-
-    void main(){
-      vec2 uv = gl_FragCoord.xy / u_res;
-      gl_FragColor = vec4(hexGrid(uv, u_time), 1.0);
-    }
-  `;
-
-  function bootGL(canvasId, fsSrc) {
-    const canvas = document.getElementById(canvasId);
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, preserveDrawingBuffer: false });
-    if (!gl) return null;
-
-    function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    const vs = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vs, VS);
-    gl.compileShader(vs);
-
-    const fs = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs, fsSrc);
-    gl.compileShader(fs);
-
-    const prog = gl.createProgram();
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
-
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-
-    const aPos = gl.getAttribLocation(prog, 'a_pos');
-    gl.enableVertexAttribArray(aPos);
-    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
-    const uTime = gl.getUniformLocation(prog, 'u_time');
-    const uRes = gl.getUniformLocation(prog, 'u_res');
-
-    let raf = null;
-    let start = performance.now();
-
-    function draw() {
-      const t = (performance.now() - start) * 0.001;
-      gl.uniform1f(uTime, t);
-      gl.uniform2f(uRes, canvas.width, canvas.height);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      raf = requestAnimationFrame(draw);
-    }
-
-    return {
-      start() { if (!raf) draw(); },
-      stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } },
-      canvas
-    };
-  }
-
-  const darkGL = bootGL('bg-dark', FS_DARK);
-  const lightGL = bootGL('bg-light', FS_LIGHT);
-
-  // Low-power mode detection
-  let lowPower = false;
-  if ('connection' in navigator) {
-    lowPower = navigator.connection.saveData || (navigator.connection.effectiveType && navigator.connection.effectiveType === 'slow-2g');
-  }
-
-  // Start appropriate background
-  function startGL() {
-    if (lowPower) {
-      if (lightGL) lightGL.canvas.style.opacity = '1';
-      if (darkGL) darkGL.canvas.style.opacity = '0';
-      return;
-    }
-    const isDark = document.body.classList.contains('dark-mode');
-    if (isDark) {
-      if (darkGL) { darkGL.canvas.style.opacity = '1'; darkGL.start(); }
-      if (lightGL) { lightGL.canvas.style.opacity = '0'; lightGL.stop(); }
-    } else {
-      if (lightGL) { lightGL.canvas.style.opacity = '1'; lightGL.start(); }
-      if (darkGL) { darkGL.canvas.style.opacity = '0'; darkGL.stop(); }
-    }
-  }
-
-  startGL();
-
-  // Mouse tracking for interactive shaders
-  document.addEventListener('mousemove', function(e) {
-    // Subtle parallax on hero text
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    const rect = hero.getBoundingClientRect();
-    if (rect.bottom < 0) return;
-    const x = (e.clientX / window.innerWidth - 0.5) * 8;
-    const y = (e.clientY / window.innerHeight - 0.5) * 4;
-    hero.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-  });
-
-  // ── Motion One Animations ──
-  function initMotion() {
-    if (typeof Motion === 'undefined') return;
-
-    // Hero elements: staggered fade-up
-    const heroEls = document.querySelectorAll('[data-anim="hero"]');
-    if (heroEls.length > 0) {
-      Motion.stagger(heroEls, {
-        animate: [
-          { opacity: [0, 1], transform: ['translateY(32px)', 'translateY(0px)'] }
-        ],
-        duration: 800,
-        delay: Motion.stagger(180),
-        easing: 'ease-out'
-      }, { scope: document });
-    }
-
-    // Cascade: scroll-triggered fade-up
-    const cascadeEls = document.querySelectorAll('[data-anim="cascade"]');
-    cascadeEls.forEach(function(el) {
-      Motion.animate(el, {
-        animate: [
-          { opacity: [0, 1], transform: ['translateY(28px)', 'translateY(0px)'] }
-        ],
-        duration: 600,
-        easing: 'ease-out',
-        scroll: { target: el, threshold: 0.15 }
-      }, { scope: document });
-    });
-
-    document.body.classList.add('motion-ready');
-  }
-
-  // Load motion.min.js if not already loaded
-  if (typeof Motion !== 'undefined') {
-    initMotion();
-  } else {
-    var s = document.createElement('script');
-    s.src = './motion.min.js';
-    s.onload = initMotion;
-    document.head.appendChild(s);
-  }
-})();
-</script>
+    <div class="cover-page">
+        
+        <h1>2026 世界杯<br>今日赛况日报</h1>
+        <p class="cover-date">2026-07-04</p>
+        <p class="subtitle">更新时间：11:00（北京时间）（北京时间）</p>
+    </div>
+    
+    <h2 class="section-header">12 小时内最新比赛结果</h2>
+    <p>16 强争夺战收官日，三场比赛全部决出胜负，卫冕冠军阿根廷加时险胜佛得角，哥伦比亚一球小胜加纳搭上末班车。</p>
+<table>
+<tr>
+<td>时间</td>
+<td>对阵</td>
+<td>比分</td>
+<td>阶段</td>
+<td>进球球员</td>
+<td>战报</td>
+</tr>
+<tr>
+<td>7/3 03:00</td>
+<td>西班牙 vs 奥地利</td>
+<td>3-0</td>
+<td>1/16决赛</td>
+<td>奥亚萨瓦尔(36', 89')、波罗(66')</td>
+<td>[战报](https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/spain-austria-match-report-highlights)</td>
+</tr>
+<tr>
+<td>7/3 07:00</td>
+<td>葡萄牙 vs 克罗地亚</td>
+<td>2-1</td>
+<td>1/16决赛</td>
+<td>C罗(68'点球)、贡萨洛·拉莫斯(90+4')；佩里西奇(53')</td>
+<td>[战报](https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/portugal-croatia-match-report-highlights)</td>
+</tr>
+<tr>
+<td>7/3 11:00</td>
+<td>瑞士 vs 阿尔及利亚</td>
+<td>2-0</td>
+<td>1/16决赛</td>
+<td>恩博洛(10')、恩多耶(46')</td>
+<td>[战报](https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/switzerland-algeria-match-report-highlights)</td>
+</tr>
+<tr>
+<td>7/4 02:00</td>
+<td>埃及 vs 澳大利亚</td>
+<td>1-1 (点球4-2)</td>
+<td>1/16决赛</td>
+<td>阿舒尔(13')；澳大利亚乌龙(55')</td>
+<td>[战报](https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/egypt-australia-match-report-highlights)</td>
+</tr>
+<tr>
+<td>7/4 06:00</td>
+<td>阿根廷 vs 佛得角</td>
+<td>3-2 (加时)</td>
+<td>1/16决赛</td>
+<td>梅西(29')、利桑德罗·马丁内斯(92')、罗梅罗造乌龙(111')；杜阿尔特(59')、卡布拉尔(103')</td>
+<td>[战报](https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/argentina-cape-verde-match-report-highlights)</td>
+</tr>
+<tr>
+<td>7/4 09:30</td>
+<td>哥伦比亚 vs 加纳</td>
+<td>1-0</td>
+<td>1/16决赛</td>
+<td>阿里亚斯(14')</td>
+<td>[战报](https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/colombia-ghana-match-report-highlights)</td>
+</tr>
+</table>
+<p>**重点战况**：阿根廷与佛得角之战堪称本届世界杯迄今为止最惊心动魄的淘汰赛。佛得角两度落后两度扳平，将卫冕冠军拖入加时，直至第 111 分钟才被乌龙绝杀。梅西打入个人世界杯第 20 球，连续 8 场世界杯破门。佛得角全队身价仅 5450 万欧元，全国人口约 50 多万，首次参赛便闯入淘汰赛，虽败犹荣。</p>
+<p>---</p>
+    
+    <h2 class="section-header">当前最佳射手榜</h2>
+    <table>
+<tr>
+<th>排名</th>
+<th>球员</th>
+<th>国籍</th>
+<th>进球数</th>
+<th>助攻数</th>
+</tr>
+<tr>
+<td>1</td>
+<td>Lionel Messi 梅西</td>
+<td>阿根廷</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Kylian Mbappé 姆巴佩</td>
+<td>法国</td>
+<td>6</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Erling Haaland 哈兰德</td>
+<td>挪威</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Harry Kane 凯恩</td>
+<td>英格兰</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Ousmane Dembélé 登贝莱</td>
+<td>法国</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Vinicius Junior 维尼修斯</td>
+<td>巴西</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Ismaïla Sarr 伊斯梅拉·萨尔</td>
+<td>塞内加尔</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Deniz Undav 翁达夫</td>
+<td>德国</td>
+<td>3</td>
+<td>2</td>
+</tr>
+</table>
+<p class="review-text">
+注：数据截至 7 月 2 日，已计入 7 月 4 日梅西进球。
+---
+</p>
+    
+    <h2 class="section-header">未开赛的 4 场新赛事</h2>
+    <div class="match-preview">
+<h3>比赛 1：西班牙 vs 葡萄牙</h3>
+<p class="match-meta"><strong>时间</strong>: 2026-07-04 23:00（北京时间）</p>
+<p class="match-meta"><strong>阶段</strong>: 1/8 决赛</p>
+<p class="match-meta"><strong>场地</strong>: 洛杉矶，SoFi 体育场</p>
+<p class="match-meta"><strong>前瞻</strong>: 唯一已锁定的 1/8 决赛对阵。西班牙 4 战不败且 0 丢球，奥亚萨瓦尔状态火热；葡萄牙 C 罗与贡萨洛·拉莫斯双箭头渐入佳境。伊比利亚德比，双方近五次交锋西班牙 2 胜 3 平保持不败。</p>
+</div>
+<div class="match-preview">
+<h3>比赛 2：加拿大 vs 摩洛哥</h3>
+<p class="match-meta"><strong>时间</strong>: 2026-07-05 01:00（北京时间）</p>
+<p class="match-meta"><strong>阶段</strong>: 1/8 决赛</p>
+<p class="match-meta"><strong>场地</strong>: 休斯敦，NRG 体育场</p>
+<p class="match-meta"><strong>前瞻</strong>: 东道主加拿大凭借戴维和戴维斯的双核驱动闯入 16 强，摩洛哥小组赛力压比利时以头名出线。双方均为世界杯淘汰赛新贵，谁将创造历史值得期待。</p>
+</div>
+<div class="match-preview">
+<h3>比赛 3：巴拉圭 vs 法国</h3>
+<p class="match-meta"><strong>时间</strong>: 2026-07-05 05:00（北京时间）</p>
+<p class="match-meta"><strong>阶段</strong>: 1/8 决赛</p>
+<p class="match-meta"><strong>场地</strong>: 费城，林肯金融体育场</p>
+<p class="match-meta"><strong>前瞻</strong>: 法国队姆巴佩 + 登贝莱攻击线火力全开，两人合计贡献 10 球 4 助攻。巴拉圭以顽强防守著称，能否顶住高卢雄鸡的冲击将是最大看点。</p>
+</div>
+<div class="match-preview">
+<h3>比赛 4：巴西 vs 挪威</h3>
+<p class="match-meta"><strong>时间</strong>: 2026-07-06 04:00（北京时间）</p>
+<p class="match-meta"><strong>阶段</strong>: 1/8 决赛</p>
+<p class="match-meta"><strong>场地</strong>: 纽约/新泽西，大都会人寿体育场</p>
+<p class="match-meta"><strong>前瞻</strong>: 本届最具话题性的对决之一。巴西拉菲尼亚、帕奎塔预计缺阵，安切洛蒂坦言"比赛注定艰难"。哈兰德赛前称"对阵巴西获胜机会极小"，巴西前锋库尼亚回应"我们同样尊重挪威"。哈兰德生吃牛心牛肝日摄 6000 大卡的食谱也为此战增添诸多场外谈资。</p>
+<p class="match-preview-text">---</p>
+</div>
+    
+    <h2 class="section-header">10 条场外花边新闻</h2>
+    <ol class="gossip-list">
+<li><strong>梅西采访突遭球员偷亲后颈，慢动作表情引爆全网</strong>：阿根廷队长接受采访时被一名路过的球员亲吻后颈，慢放画面中梅西表情被网友戏称为"直接灵魂出窍"，视频在 Threads 等平台疯传。【JUKSY】</li>
+<li><strong>墨西哥队戴哈兰德头套维京划船庆祝晋级</strong>：墨西哥 2-0 击败厄瓜多尔后，全队在更衣室集体佩戴哈兰德仿真头套模仿维京划船，画面整齐到被误认为 AI 生成。哈兰德本人笑着转发该视频。【中华网】</li>
+<li><strong>哈兰德日摄 6000 大卡食谱曝光</strong>：挪威晋级 16 强后，哈兰德生吃牛心牛肝配生牛奶的每日饮食方案引发热议。医生紧急提醒普通人切勿模仿，已有网友跟风挑战。【掌闻视讯】</li>
+<li><strong>哈兰德赛后火速开启购物模式被赞"绝不内耗"</strong>：6 月 30 日挪威击败科特迪瓦晋级后，哈兰德随即现身商场扫货，网友调侃其精力旺盛，"踢完生死战就去逛街，心态太好"。【浙江卫视】</li>
+<li><strong>墨西哥记者计划泄露英格兰酒店位置，欲以噪音干扰三狮军团</strong>：1/8 决赛前夕，墨西哥当地记者放话要向球迷泄露英格兰下榻酒店，效仿此前干扰厄瓜多尔的方式通宵制造噪音。英格兰方面已加强保密措施。【腾讯网】</li>
+<li><strong>哈兰德成世界杯头号表情包大户</strong>：赛场和采访中表情管理全面"下线"，哈兰德相关表情包大量产出，被球迷称为本届世界杯行走的表情包制造机。【篮球过人技巧】</li>
+<li><strong>哈兰德维京划船庆祝动作火遍全球</strong>：从纽约时代广场到挪威议会，从地铁车厢到球迷看台，"维京划船"已成为本届世界杯最具感染力的庆祝仪式，哈兰德进球后划船已是个人标志。【新民晚报】</li>
+<li><strong>佛得角 40 岁门将母亲跨越重洋见证历史</strong>：沃津尼亚此前哽咽称母亲无法到场，在多方帮助下母亲安娜终于赶到现场。确认晋级那一刻，安娜在看台上振臂欢呼，佛得角国内街头绘制了沃津尼亚的巨幅画像。【腾讯网】</li>
+<li><strong>哈兰德超短裤造型被调侃像尿不湿</strong>：赛场超短裤造型引发网友调侃，奔跑动作被戏称"像猴子"，网友纷纷称其"回归大自然"，相关梗图广泛传播。【小柒娱乐社】</li>
+<li><strong>英格兰队长凯恩连环倒霉事件簿</strong>：球队装备跨州转运遭洗劫、拍摄花絮仅穿内裤意外入镜、龙卷风紧急避险——三狮队长本届世界杯的场外遭遇被球迷戏称为"天选悲情喜剧人"。【今日头条】 --- *数据来源：FIFA 官网、ESPN、新浪体育、腾讯体育、央视网、NDTV Sports* *报告生成：2026-07-04 11:00（北京时间）*</li>
+</ol>
+    
+    <p class="source-footer">数据来源：FIFA 官网、ESPN、Yahoo Sports、BBC、新浪体育、今日头条等</p>
+    
 </body>
 </html>
